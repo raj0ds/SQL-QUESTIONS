@@ -20,3 +20,46 @@ FULL JOIN CENSUS_DATA
 ON CR.COMMUNITY_AREA_NUMBER = CENSUS_DATA.COMMUNITY_AREA_NUMBER
 WHERE CENSUS_DATA.COMMUNITY_AREA_NAME IN ('Oakland', 'Armour Square', 'Edgewater','CHICAGO');
 
+
+Q.4) Write and execute a SQL query to list the school names, community names and average attendance for communities with a hardship index of 98.
+SELECT S.NAME_OF_SCHOOL, S.COMMUNITY_AREA_NAME, S.AVERAGE_STUDENT_ATTENDANCE
+FROM CHICAGO_PUBLIC_SCHOOLS AS S
+LEFT JOIN CENSUS_DATA AS C
+USING(COMMUNITY_AREA_NAME)
+WHERE C.HARDSHIP_INDEX = 98;
+
+
+Q.5) Write the structure of a query to create or replace a stored procedure called UPDATE_LEADERS_SCORE that takes a in_School_ID parameter as an integer and a in_Leader_Score parameter as an integer. Don't forget to use the #SET TERMINATOR statement to use the @ for the CREATE statement terminator. 
+CREATE OR REPLACE PROCEDURE UPDATE_LEADERS_SCORE (IN School_ID BIGINT, IN LeaderS_Score INT) 
+LANGUAGE SQL
+MODIFIES SQL DATA
+BEGIN
+	IF LEADERS_SCORE >= 80 AND LEADERS_SCORE <= 100 THEN
+		UPDATE CHICAGO_PUBLIC_SCHOOLS
+		SET LEADERS_ICON = 'V.str'
+		WHERE School_ID = School_ID;
+	
+	ELSEIF LEADERS_SCORE >= 60 THEN
+		UPDATE CHICAGO_PUBLIC_SCHOOLS
+		SET LEADERS_ICON = 'Strong'
+		WHERE School_ID = School_ID;
+		
+	ELSEIF LEADERS_SCORE >= 40 THEN
+		UPDATE CHICAGO_PUBLIC_SCHOOLS
+		SET LEADERS_ICON = 'Avg'
+		WHERE School_ID = School_ID;
+	
+	ELSEIF LEADERS_SCORE >= 20 THEN
+		UPDATE CHICAGO_PUBLIC_SCHOOLS
+		SET LEADERS_ICON = 'Weak'
+		WHERE School_ID = School_ID;
+	ELSEIF LEADERS_SCORE >= 0 THEN
+		UPDATE CHICAGO_PUBLIC_SCHOOLS
+		SET LEADERS_ICON = 'V.Weak'
+		WHERE SCHOOL_ID = School_ID;
+	
+	ELSE ROLLBACK WORK;
+	END IF;
+	COMMIT WORK;
+END
+@
