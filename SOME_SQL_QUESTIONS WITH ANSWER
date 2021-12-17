@@ -4,3 +4,19 @@ from chicago_crime_data as cr
 inner join census_data as c
 using (community_area_number)
 where c.community_area_number = 18;
+
+
+Q.2) List all crimes that took place at a school.Include case number, crime type and community name
+SELECT CR.LOCATION_DESCRIPTION, CR.CASE_NUMBER, CR.PRIMARY_TYPE, C.COMMUNITY_AREA_NAME
+FROM CHICAGO_CRIME_DATA AS CR
+LEFT JOIN CENSUS_DATA AS C
+USING (COMMUNITY_AREA_NUMBER)
+WHERE LOCATION_DESCRIPTION LIKE 'SCHOOL%';
+
+Q.3) For the communities of Oakland, Armour Square, Edgewater and CHICAGO list the associated community_area_numbers and the case_numbers.
+SELECT CR.community_area_number, CR.case_number
+FROM CHICAGO_CRIME_DATA AS CR
+FULL JOIN CENSUS_DATA
+ON CR.COMMUNITY_AREA_NUMBER = CENSUS_DATA.COMMUNITY_AREA_NUMBER
+WHERE CENSUS_DATA.COMMUNITY_AREA_NAME IN ('Oakland', 'Armour Square', 'Edgewater','CHICAGO');
+
