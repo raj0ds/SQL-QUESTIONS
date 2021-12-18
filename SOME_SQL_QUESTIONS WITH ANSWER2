@@ -87,5 +87,44 @@ ORDER BY G.Grade DESC,Name,Marks;
 
 
 **Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard! Write a query to print the respective hacker_id and name of hackers who achieved full scores for more than one challenge. Order your output in descending order by the total number of challenges in which the hacker earned a full score. If more than one hacker received full scores in same number of challenges, then sort them by ascending hacker_id.**
+select s.hacker_id , h.name 
+from submissions s
+inner join hackers h
+on s.hacker_id =  h.hacker_id
+inner join challenges c
+on s.challenge_id = c.challenge_id 
+inner joindifficulty d
+on c.difficulty_level = d.difficulty_level
+where s.score = d.score
+group by s.hacker_id,h.name
+having  count(h.name) > 1
+order by count(h.name) desc , s.hacker_id asc;
 
+
+Harry Potter and his friends are at Ollivander's with Ron, finally replacing Charlie's old broken wand.
+
+Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age. Write a query to print the id, age, coins_needed, and power of the wands that Ron's interested in, sorted in order of descending power. If more than one wand has same power, sort the result in order of descending age.
+TWO TABLES WAND W AND WAND_PROPERTY P IS GIVEN
+select w.id, p.age, w.coins_needed, w.power
+from Wands as w join Wands_Property as p
+on (w.code = p.code)
+where p.is_evil = 0 and w.coins_needed = 
+(select min(coins_needed) 
+from Wands as w1 join Wands_Property as p1 
+ on (w1.code = p1.code) 
+ where w1.power = w.power and p1.age = p.age)
+ order by w.power desc, p.age desc;
+ 
+ 
+ Julia asked her students to create some coding challenges. Write a query to print the hacker_id, name, and the total number of challenges created by each student. Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
+     select a.hacker_id,a.name,count(b.hacker_id)    
+    from Hackers a, Challenges b
+    WHERE a.hacker_id = b.hacker_id
+    GROUP BY a.hacker_id,a.name
+    HAVING count(b.hacker_id) not in (select  distinct          count(hacker_id) from Challenges
+    WHERE hacker_id <> a.hacker_id
+    group by hacker_id
+    having count(hacker_id) < (select                           max(x.challenge_count) 
+    from (select count(b.challenge_id) as challenge_count                 from Challenges b GROUP BY b.hacker_id) as x ))
+    ORDER BY count(b.hacker_id) desc, a.hacker_id;
 
