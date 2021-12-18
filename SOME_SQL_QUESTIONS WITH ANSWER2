@@ -1,0 +1,91 @@
+Query the list of CITY names from STATION which have vowels (i.e., a, e, i, o, and u) as both their first and last characters. Your result cannot contain duplicates
+SELECT DISTINCT CITY FROM STATION WHERE LOWER(SUBSTR(CITY,1,1)) in ('a','e','i','o','u') and LOWER(SUBSTR(CITY,LENGTH(CITY),1)) in ('a','e','i','o','u');
+
+Query the list of CITY names from STATION which have vowels (i.e., a, e, i, o, and u) as their first  characters. Your result cannot contain duplicates
+SELECT DISTINCT(CITY) FROM STATION WHERE LEFT(LOWER(CITY), 1) IN ('a', 'e', 'i', 'o', 'u');
+
+Query the list of CITY names from STATION which have vowels (i.e., a, e, i, o, and u) as their last character. Your result cannot contain duplicates
+SELECT DISTINCT(CITY) FROM STATION WHERE RIGHT(LOWER(CITY), 1) IN ('a', 'e', 'i', 'o', 'u');
+
+Query the list of CITY names from STATION that do not start with vowels. Your result cannot contain duplicates.
+SELECT DISTINCT(CITY) FROM STATION WHERE LEFT(LOWER(CITY), 1) NOT IN ('a', 'e', 'i', 'o', 'u');
+
+Query the list of CITY names from STATION that either do not start with vowels or do not end with vowels. Your result cannot contain duplicates.
+SELECT DISTINCT CITY FROM STATION WHERE LOWER(SUBSTR(CITY,1,1)) NOT in ('a','e','i','o','u') OR LOWER(SUBSTR(CITY,LENGTH(CITY),1)) NOT in ('a','e','i','o','u');
+
+Query the Name of any student in STUDENTS who scored higher than  Marks. Order your output by the last three characters of each name. If two or more students both have names ending in the same last three characters (i.e.: Bobby, Robby, etc.), secondary sort them by ascending ID.
+ SELECT (NAME) FROM STUDENTS WHERE MARKS>75 ORDER BY SUBSTR(NAME,LENGTH(NAME)-2,3), ID ASC;
+ 
+ Samantha was tasked with calculating the average monthly salaries for all employees in the EMPLOYEES table, but did not realize her keyboard's  key was broken until after completing the calculation. She wants your help finding the difference between her miscalculation (using salaries with any zeros removed), and the actual average salary
+ select cast( CEILING( avg(salary*1.0) - avg(cast(replace(salary, '0', '') as float)) ) as int)
+from EMPLOYEES;
+
+We define an employee's total earnings to be their monthly SALARY * MONTHS  worked, and the maximum total earnings to be the maximum total earnings for any employee in the Employee table. Write a query to find the maximum total earnings for all employees as well as the total number of employees who have maximum total earnings. Then print these values as  space-separated integers.
+select max(salary*months), count(salary*months) from employee where salary*months in (select max(salary*months) from employee);
+
+Query the following two values from the STATION table:
+The sum of all values in LAT_N rounded to a scale of  decimal places.
+The sum of all values in LONG_W rounded to a scale of  decimal places.
+
+SELECT CAST(ROUND(SUM(LAT_N), 2) as decimal(7, 2)), CAST(ROUND(SUM(LONG_W), 2) as decimal(7, 2)) FROM STATION; # HERE 7 IS USED TO PREDICT TOTAL NUMBER OF DIGITS BEFORE AND AFTER THE DECIMAL AND 2 REPRESENT THE TOTAL NUMBER OF DIGITS AFTER DECIMAL.
+
+
+Query the sum of Northern Latitudes (LAT_N) from STATION having values greater than 38.7880 and less than 137.2345 Truncate your answer to  decimal places.
+ select cast(sum(lat_n) as decimal(18,4)) from station where lat_n > 38.7880 and lat_n<137.2345;
+ 
+ Query the greatest value of the Northern Latitudes (LAT_N) from STATION that is less than 137.2345 Truncate your answer to  decimal places.
+ SELECT CAST(MAX(LAT_N) AS DECIMAL(18,4)) FROM STATION WHERE LAT_N < 137.2345;
+ 
+ Query the Western Longitude (LONG_W) for the largest Northern Latitude (LAT_N) in STATION that is less than . Round your answer to  decimal places.
+ SELECT CAST(ROUND(long_w, 4) AS DECIMAL(9,4)) FROM Station WHERE lat_n = (SELECT MAX(lat_n) FROM Station WHERE lat_n < 137.2345);
+ 
+ Query the smallest Northern Latitude (LAT_N) from STATION that is greater than . Round your answer to  decimal places.
+ SELECT CAST(ROUND(MIN(LAT_N),4) AS DECIMAL(10,4))
+FROM STATION
+WHERE LAT_N > 38.7880;
+
+Query the Western Longitude (LONG_W)where the smallest Northern Latitude (LAT_N) in STATION is greater than 38.7880 Round your answer to 4 decimal places.
+select CAST(round(LONG_W,4) AS DECIMAL(10,4)) from station where LAT_N in (select min(LAT_N) from station where LAT_N > 38.7780);
+
+Consider P1(a,b) and P2(c,d) to be two points on a 2D plane.
+
+ a happens to equal the minimum value in Northern Latitude (LAT_N in STATION).
+ b happens to equal the minimum value in Western Longitude (LONG_W in STATION).
+ c happens to equal the maximum value in Northern Latitude (LAT_N in STATION).
+ d happens to equal the maximum value in Western Longitude (LONG_W in STATION). FIND THE MANHATTAN DISTANCE
+ SELECT CAST(ROUND((MAX(LAT_N)-MIN(LAT_N)) + (MAX(LONG_W) - MIN(LONG_W)),4) AS DECIMAL(20,4)) FROM STATION;
+
+FROM THE PREVIOUS DATA FIND EUCLIDIAN DISTANCE
+SELECT CAST(ROUND(SQRT(POWER((MAX(LAT_N)-MIN(LAT_N)),2) + POWER((MAX(LONG_W) - MIN(LONG_W)),2)),4) AS DECIMAL(20,4)) FROM STATION;
+
+
+A median is defined as a number separating the higher half of a data set from the lower half. Query the median of the Northern Latitudes (LAT_N) from STATION and round your answer to  decimal places.
+Ans) 2 Approaches:
+1. Make a function and do query then
+2. Find total number of datapoints then divide it by 2.
+SELECT COUNT(*) FROM STATION; total number of datapoints
+select CAST(round(lat_n,4) AS DECIMAL(6,4)) from station order by lat_n limit 249,1;
+
+Given the CITY and COUNTRY tables, query the names of all the continents (COUNTRY.Continent) and their respective average city populations (CITY.Population) rounded down to the nearest integer.
+
+Note: CITY.CountryCode and COUNTRY.Code are matching key columns.
+SELECT CN.CONTINENT, FLOOR(AVG(CT.POPULATION)) # WE WILL NOT USE ROUND HERE COZ POPULATION CAN'T BE MORE
+FROM CITY CT
+INNER JOIN COUNTRY CN
+ON CN.CODE = CT.COUNTRYCODE
+GROUP BY CN.CONTINENT;
+
+
+
+You are given two tables: Students and Grades. Students contains three columns ID, Name and Marks. Ketty gives Eve a task to generate a report containing three columns: Name, Grade and Mark. Ketty doesn't want the NAMES of those students who received a grade lower than 8. The report must be in descending order by grade -- i.e. higher grades are entered first. If there is more than one student with the same grade (8-10) assigned to them, order those particular students by their name alphabetically. Finally, if the grade is lower than 8, use "NULL" as their name and list them by their grades in descending order. If there is more than one student with the same grade (1-7) assigned to them, order those particular students by their marks in ascending order.
+
+SELECT CASE WHEN G.Grade<8 THEN NULL ELSE S.Name END AS Name, G.Grade, S.Marks 
+FROM Students S 
+INNER JOIN Grades G 
+ON S.Marks BETWEEN G.Min_Mark and G.Max_Mark 
+ORDER BY G.Grade DESC,Name,Marks;
+
+
+**Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard! Write a query to print the respective hacker_id and name of hackers who achieved full scores for more than one challenge. Order your output in descending order by the total number of challenges in which the hacker earned a full score. If more than one hacker received full scores in same number of challenges, then sort them by ascending hacker_id.**
+
+
